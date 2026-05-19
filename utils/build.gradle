@@ -1,0 +1,65 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+android {
+    namespace 'club.bitflip.utils'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+dependencies {
+    // If your library uses FTC classes, you can add the dependency here:
+    // implementation 'org.firstinspires.ftc:robotcore:9.2.0'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'club.bitflip'
+                artifactId = 'utils'
+                version = '1.0.0'
+            }
+        }
+        repositories {
+            maven {
+                name = "Bitflip-Utils"
+                url = "https://maven.bitflip.club/releases"
+                
+                credentials {
+                    // Use 'mavenUser' and 'mavenPassword' in your local gradle.properties file
+                    username = project.findProperty("mavenUser") ?: System.getenv("MAVEN_USER")
+                    password = project.findProperty("mavenPassword") ?: System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        }
+    }
+}
