@@ -1,0 +1,33 @@
+package club.bitflip.utils.hardware
+
+import club.bitflip.utils.OpModeManager
+import com.qualcomm.robotcore.hardware.CRServoImplEx
+import com.qualcomm.robotcore.hardware.PwmControl
+import kotlin.math.abs
+
+/**
+ * @param servoName the configured name of the servo on the RobotController
+ * @param cacheTolerance the range in which a new power won't be sent
+ */
+class CRServoEx(
+    servoName: String,
+    var cacheTolerance: Double = 0.04
+) {
+    private val crServo = OpModeManager.hardwareMap.get(CRServoImplEx::class.java, servoName).apply {
+        pwmRange = PwmControl.PwmRange(500.0, 2500.0)
+    }
+
+    private var lastSetPower = 0.0
+
+    /**
+     * @param power the power to set the servo to
+     */
+    var power: Double
+        get() = lastSetPower
+        set(power) {
+            if (abs(power - lastSetPower) > cacheTolerance) {
+                crServo.power = power
+                lastSetPower = power
+            }
+        }
+}
