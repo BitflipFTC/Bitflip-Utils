@@ -22,7 +22,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Publish to Maven
-        run: ./gradlew :utils:publish
+        run: ./gradlew :utils:publish -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
         env:
           MAVEN_USER: ${{ secrets.MAVENUSER }}
           MAVEN_PASSWORD: ${{ secrets.MAVENPASSWORD }}
